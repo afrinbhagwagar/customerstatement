@@ -46,13 +46,7 @@ public class CustomerStatementControllerIntegrationTest {
 
   @Test
   public void testPostWhenEndBalanceIncorrect() throws Exception {
-    CustomerStatementRequestDto customerStatementRequestDto = new CustomerStatementRequestDto();
-    customerStatementRequestDto.setTransactionReference(871221L);
-    customerStatementRequestDto.setAccountNumber("NL05RABO382971916472");
-    customerStatementRequestDto.setStartBalance(62.8);
-    customerStatementRequestDto.setMutationType("-3");
-    customerStatementRequestDto.setDescription("End balance incorrect");
-    customerStatementRequestDto.setEndBalance(65.8);
+    CustomerStatementRequestDto customerStatementRequestDto = dtoForIncorrectEndBalance();
 
     mockMvc
         .perform(post(CONTEXT_ROOT).contentType(CONTENT_TYPE)
@@ -78,6 +72,17 @@ public class CustomerStatementControllerIntegrationTest {
             "{\"result\":\"DUPLICATE_REFERENCE\",\"errorRecords\":[{\"reference\":873621,\"accountNumber\":\"NL05RABO382972916472\"}]}")));
   }
 
+  private CustomerStatementRequestDto dtoForIncorrectEndBalance() {
+    CustomerStatementRequestDto customerStatementRequestDto = new CustomerStatementRequestDto();
+    customerStatementRequestDto.setTransactionReference(871221L);
+    customerStatementRequestDto.setAccountNumber("NL05RABO382971916472");
+    customerStatementRequestDto.setStartBalance(62.8);
+    customerStatementRequestDto.setMutationType("-3");
+    customerStatementRequestDto.setDescription("End balance incorrect");
+    customerStatementRequestDto.setEndBalance(65.8);
+    return customerStatementRequestDto;
+  }
+  
   private CustomerStatementRequestDto inputDtoForReferencePresent() {
     CustomerStatementRequestDto dtoForReferencePresent = new CustomerStatementRequestDto();
     dtoForReferencePresent.setTransactionReference(873621L);
