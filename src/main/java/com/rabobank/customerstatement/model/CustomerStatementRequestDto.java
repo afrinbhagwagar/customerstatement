@@ -3,6 +3,10 @@ package com.rabobank.customerstatement.model;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * DTO class as request input object
+ *
+ */
 @Getter
 @Setter
 public class CustomerStatementRequestDto {
@@ -13,8 +17,8 @@ public class CustomerStatementRequestDto {
   private String mutationType;
   private String description;
   private double endBalance;
-  
+
   public CustomerStatementRequestDto() {
-    
+    //DTO object creation
   }
 }

@@ -11,6 +11,9 @@ import com.rabobank.customerstatement.entity.CustomerStatementRequest;
 import com.rabobank.customerstatement.model.CustomerStatementRequestDto;
 import com.rabobank.customerstatement.repository.CustomerStatementRepository;
 
+/**
+ * Service implementation class.
+ */
 @Service
 public class CustomerStatementServiceImpl implements CustomerStatementService {
 

@@ -29,13 +29,7 @@ public class CustomerStatementControllerIntegrationTest {
 
   @Test
   public void testPostPositive() throws Exception {
-    CustomerStatementRequestDto customerStatementRequestDto = new CustomerStatementRequestDto();
-    customerStatementRequestDto.setTransactionReference(873114921L);
-    customerStatementRequestDto.setAccountNumber("NL05RABO8372916472");
-    customerStatementRequestDto.setStartBalance(62.8);
-    customerStatementRequestDto.setMutationType("+3");
-    customerStatementRequestDto.setDescription("Positive flow transaction.");
-    customerStatementRequestDto.setEndBalance(65.8);
+    CustomerStatementRequestDto customerStatementRequestDto = dtoForPositiveFlow();
 
     mockMvc
         .perform(post(CONTEXT_ROOT).contentType(CONTENT_TYPE)
@@ -59,8 +53,9 @@ public class CustomerStatementControllerIntegrationTest {
   public void testPostWhenReferenceAlreadyPresent() throws Exception {
     CustomerStatementRequestDto correctDTO = inputCorrectDto();
 
-    mockMvc.perform(
-        post(CONTEXT_ROOT).contentType(CONTENT_TYPE).content(new ObjectMapper().writeValueAsString(correctDTO)))
+    mockMvc
+        .perform(
+            post(CONTEXT_ROOT).contentType(CONTENT_TYPE).content(new ObjectMapper().writeValueAsString(correctDTO)))
         .andExpect(status().isOk());
 
     CustomerStatementRequestDto dtoForReferencePresent = inputDtoForReferencePresent();
@@ -70,6 +65,39 @@ public class CustomerStatementControllerIntegrationTest {
             .content(new ObjectMapper().writeValueAsString(dtoForReferencePresent)))
         .andExpect(status().isOk()).andExpect(content().string(equalTo(
             "{\"result\":\"DUPLICATE_REFERENCE\",\"errorRecords\":[{\"reference\":873621,\"accountNumber\":\"NL05RABO382972916472\"}]}")));
+  }
+
+  @Test
+  public void testPostWhenJsonParseException() throws Exception {
+
+    mockMvc.perform(post(CONTEXT_ROOT).contentType(CONTENT_TYPE)
+        .content("{\r\n" + "    \"transactionReference\": 854,\r\n" + "    \"accountNumber\": \"NLABNA271827189\",\r\n"
+            + "    \"startBalance\": 87.0,\r\n" + "    \"mutationType\": \"+4\",\r\n"
+            + "    \"description\": My first transaction\",\r\n" + "    \"endBalance\": 91.0\r\n" + "}"))
+        .andExpect(status().isBadRequest())
+        .andExpect(content().string(equalTo("{\"result\":\"BAD_REQUEST\",\"errorRecords\":[]}")));
+  }
+  
+  @Test
+  public void testPostWhenSomeGenericExceptions() throws Exception {
+    CustomerStatementRequestDto customerStatementRequestDto = dtoForInvalidOperationException();
+
+    mockMvc
+        .perform(post(CONTEXT_ROOT).contentType(CONTENT_TYPE)
+            .content(new ObjectMapper().writeValueAsString(customerStatementRequestDto)))
+        .andExpect(status().isInternalServerError())
+        .andExpect(content().string(equalTo("{\"result\":\"INTERNAL_SERVER_ERROR\",\"errorRecords\":[]}")));
+  }
+
+  private CustomerStatementRequestDto dtoForPositiveFlow() {
+    CustomerStatementRequestDto customerStatementRequestDto = new CustomerStatementRequestDto();
+    customerStatementRequestDto.setTransactionReference(873114921L);
+    customerStatementRequestDto.setAccountNumber("NL05RABO8372916472");
+    customerStatementRequestDto.setStartBalance(62.8);
+    customerStatementRequestDto.setMutationType("+3");
+    customerStatementRequestDto.setDescription("Positive flow transaction.");
+    customerStatementRequestDto.setEndBalance(65.8);
+    return customerStatementRequestDto;
   }
 
   private CustomerStatementRequestDto dtoForIncorrectEndBalance() {
@@ -82,7 +110,7 @@ public class CustomerStatementControllerIntegrationTest {
     customerStatementRequestDto.setEndBalance(65.8);
     return customerStatementRequestDto;
   }
-  
+
   private CustomerStatementRequestDto inputDtoForReferencePresent() {
     CustomerStatementRequestDto dtoForReferencePresent = new CustomerStatementRequestDto();
     dtoForReferencePresent.setTransactionReference(873621L);
@@ -104,5 +132,17 @@ public class CustomerStatementControllerIntegrationTest {
     customerStatementRequestDto.setEndBalance(65.8);
     return customerStatementRequestDto;
   }
+  
+  private CustomerStatementRequestDto dtoForInvalidOperationException() {
+    CustomerStatementRequestDto customerStatementRequestDto = new CustomerStatementRequestDto();
+    customerStatementRequestDto.setTransactionReference(873621L);
+    customerStatementRequestDto.setAccountNumber("NL05RABO382972916472");
+    customerStatementRequestDto.setStartBalance(62.8);
+    customerStatementRequestDto.setMutationType("*3");
+    customerStatementRequestDto.setDescription("Transaction reference present.");
+    customerStatementRequestDto.setEndBalance(65.8);
+    return customerStatementRequestDto;
+  }
+
 
 }

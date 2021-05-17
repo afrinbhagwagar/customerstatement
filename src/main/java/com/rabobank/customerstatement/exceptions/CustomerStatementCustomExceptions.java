@@ -15,6 +15,9 @@ import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExcep
 
 import com.rabobank.customerstatement.entity.CustomerStatementResponse;
 
+/**
+ * Exception class to handle different scenarios
+ */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
 public class CustomerStatementCustomExceptions extends ResponseEntityExceptionHandler{

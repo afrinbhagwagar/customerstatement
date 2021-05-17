@@ -4,6 +4,9 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Class specifying list of error records.
+ */
 @Getter
 @Setter
 @AllArgsConstructor

@@ -26,21 +26,34 @@ public class CustomerStatementController {
   @Autowired
   private CustomerStatementService customerStatementService;
 
+  /**
+   * To save customer statements.
+   * 
+   * @param customerStatementRequestDto input DTO with customer transaction details.
+   * @return response if saved or not.
+   * @throws InvalidOperationException if operation is either debit/credit.
+   */
   @PostMapping
   public ResponseEntity<CustomerStatementResponse> saveCustomerStatement(
       @RequestBody CustomerStatementRequestDto customerStatementRequestDto) throws InvalidOperationException {
 
     CustomerStatementResponse customerStatementResponse = new CustomerStatementResponse();
-    int caseOfError = customerStatementRequestValidator.validateRefAndEndBalance(customerStatementRequestDto, customerStatementResponse);
+    int caseOfError = customerStatementRequestValidator.validateRefAndEndBalance(customerStatementRequestDto,
+        customerStatementResponse);
     if (caseOfError != 0)
       return ResponseEntity.ok(customerStatementResponse);
 
     customerStatementService.saveCustomerStatement(customerStatementRequestDto);
     customerStatementResponse.setResult("SUCCESSFUL");
-    
+
     return ResponseEntity.ok(customerStatementResponse);
   }
 
+  /**
+   * To get all customer statements.
+   * 
+   * @return list of all customer statements.
+   */
   @GetMapping
   public List<CustomerStatementRequestDto> getAllCustomerStatements() {
     return customerStatementService.getAllCustomerStatements();

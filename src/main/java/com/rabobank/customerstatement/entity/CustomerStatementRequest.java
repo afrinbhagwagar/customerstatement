@@ -6,6 +6,9 @@ import javax.persistence.Id;
 import lombok.Getter;
 import lombok.Setter;
 
+/**
+ * Entity class as request
+ */
 @Setter
 @Getter
 @Entity
