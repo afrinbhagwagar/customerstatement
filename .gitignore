@@ -1,34 +1,3 @@
-Skip to content
-Search or jump to…
-
-Pull requests
-Issues
-Marketplace
-Explore
- 
-@afrinbhagwagar 
-afrinbhagwagar
-/
-countriesairportsrunways
-1
-00
-Code
-Issues
-Pull requests
-Actions
-Projects
-Wiki
-Security
-Insights
-Settings
-countriesairportsrunways/.gitignore
-@afrinbhagwagar
-afrinbhagwagar Initial commit for CSV
-Latest commit fdd4f2f on Mar 22
- History
- 1 contributor
-57 lines (51 sloc)  782 Bytes
-  
 # Java Local workspace files #
 ###################
 **/.*
@@ -86,16 +55,3 @@ Thumbs.db
 
 /bin/
 *.iml
-© 2021 GitHub, Inc.
-Terms
-Privacy
-Security
-Status
-Docs
-Contact GitHub
-Pricing
-API
-Training
-Blog
-About
-Loading complete
