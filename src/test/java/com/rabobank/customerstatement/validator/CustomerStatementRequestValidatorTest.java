@@ -16,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import com.rabobank.customerstatement.entity.CustomerStatementRequest;
 import com.rabobank.customerstatement.entity.CustomerStatementResponse;
+import com.rabobank.customerstatement.exceptions.InputValidationException;
 import com.rabobank.customerstatement.exceptions.InvalidOperationException;
 import com.rabobank.customerstatement.model.CustomerStatementRequestDto;
 import com.rabobank.customerstatement.repository.CustomerStatementRepository;
@@ -99,12 +100,12 @@ public class CustomerStatementRequestValidatorTest {
         .thenReturn(recordInDB);
     int resultCase = customerStatementRequestValidator.validateRefAndEndBalance(customerStatementRequestDto,
         customerStatementResponse);
-    
+
     assertEquals(1, resultCase);
     assertEquals(1, customerStatementResponse.getErrorRecords().size());
     assertEquals("DUPLICATE_REFERENCE", customerStatementResponse.getResult());
   }
-  
+
   @Test
   public void validateRefAndEndBalanceWhenBothIncorrect() throws InvalidOperationException {
     CustomerStatementRequestDto customerStatementRequestDto = new CustomerStatementRequestDto();
@@ -112,7 +113,8 @@ public class CustomerStatementRequestValidatorTest {
     customerStatementRequestDto.setAccountNumber("NL05ABNA123456789");
     customerStatementRequestDto.setStartBalance(69.8);
     customerStatementRequestDto.setMutationType("-5");
-    customerStatementRequestDto.setDescription("When end balance is incorrect and transaction reference already present");
+    customerStatementRequestDto
+        .setDescription("When end balance is incorrect and transaction reference already present");
     customerStatementRequestDto.setEndBalance(64.1);
 
     CustomerStatementResponse customerStatementResponse = new CustomerStatementResponse();
@@ -123,9 +125,22 @@ public class CustomerStatementRequestValidatorTest {
         .thenReturn(recordInDB);
     int resultCase = customerStatementRequestValidator.validateRefAndEndBalance(customerStatementRequestDto,
         customerStatementResponse);
-    
+
     assertEquals(2, resultCase);
     assertEquals(2, customerStatementResponse.getErrorRecords().size());
     assertEquals("DUPLICATE_REFERENCE_INCORRECT_END_BALANCE", customerStatementResponse.getResult());
+  }
+
+  @Test(expected = InputValidationException.class)
+  public void testValidateInputsPositive() throws InputValidationException {
+    CustomerStatementRequestDto customerStatementRequestDto = new CustomerStatementRequestDto();
+    customerStatementRequestDto.setTransactionReference(93387L);
+    customerStatementRequestDto.setAccountNumber("NL03RABO025383922");
+    customerStatementRequestDto.setStartBalance(70.0);
+    customerStatementRequestDto.setDescription("Validating inputs");
+    customerStatementRequestDto.setEndBalance(65.0);
+
+    customerStatementRequestValidator.validateRequestInputDTO(customerStatementRequestDto);
+
   }
 }

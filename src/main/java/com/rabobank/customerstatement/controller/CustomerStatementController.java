@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.rabobank.customerstatement.entity.CustomerStatementResponse;
+import com.rabobank.customerstatement.exceptions.InputValidationException;
 import com.rabobank.customerstatement.exceptions.InvalidOperationException;
 import com.rabobank.customerstatement.model.CustomerStatementRequestDto;
 import com.rabobank.customerstatement.service.CustomerStatementService;
@@ -32,11 +33,14 @@ public class CustomerStatementController {
    * @param customerStatementRequestDto input DTO with customer transaction details.
    * @return response if saved or not.
    * @throws InvalidOperationException if operation is either debit/credit.
+   * @throws InputValidationException if validation fails
    */
   @PostMapping
   public ResponseEntity<CustomerStatementResponse> saveCustomerStatement(
-      @RequestBody CustomerStatementRequestDto customerStatementRequestDto) throws InvalidOperationException {
+      @RequestBody CustomerStatementRequestDto customerStatementRequestDto) throws InvalidOperationException, InputValidationException {
 
+    customerStatementRequestValidator.validateRequestInputDTO(customerStatementRequestDto);
+    
     CustomerStatementResponse customerStatementResponse = new CustomerStatementResponse();
     int caseOfError = customerStatementRequestValidator.validateRefAndEndBalance(customerStatementRequestDto,
         customerStatementResponse);

@@ -20,23 +20,24 @@ import com.rabobank.customerstatement.entity.CustomerStatementResponse;
  */
 @Order(Ordered.HIGHEST_PRECEDENCE)
 @ControllerAdvice
-public class CustomerStatementCustomExceptions extends ResponseEntityExceptionHandler{
+public class CustomerStatementCustomExceptions extends ResponseEntityExceptionHandler {
 
   @Override
-  protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers, HttpStatus status, WebRequest request) {
+  protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex, HttpHeaders headers,
+      HttpStatus status, WebRequest request) {
     CustomerStatementResponse customerStatementResponse = new CustomerStatementResponse();
     customerStatementResponse.setResult("BAD_REQUEST");
     customerStatementResponse.setErrorRecords(new ArrayList<>());
-    
+
     return new ResponseEntity<>(customerStatementResponse, status);
   }
-  
+
   @ExceptionHandler({InvalidOperationException.class, Exception.class})
   public ResponseEntity<CustomerStatementResponse> handleGenericExceptions() {
     CustomerStatementResponse customerStatementResponse = new CustomerStatementResponse();
     customerStatementResponse.setResult("INTERNAL_SERVER_ERROR");
     customerStatementResponse.setErrorRecords(new ArrayList<>());
-    
+
     return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(customerStatementResponse);
   }
 }

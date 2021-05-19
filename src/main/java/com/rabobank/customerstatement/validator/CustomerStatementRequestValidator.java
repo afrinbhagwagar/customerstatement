@@ -12,6 +12,7 @@ import org.springframework.stereotype.Component;
 import com.rabobank.customerstatement.entity.CustomerStatementRequest;
 import com.rabobank.customerstatement.entity.CustomerStatementResponse;
 import com.rabobank.customerstatement.entity.ErrorRecords;
+import com.rabobank.customerstatement.exceptions.InputValidationException;
 import com.rabobank.customerstatement.exceptions.InvalidOperationException;
 import com.rabobank.customerstatement.model.CustomerStatementRequestDto;
 import com.rabobank.customerstatement.repository.CustomerStatementRepository;
@@ -91,6 +92,16 @@ public class CustomerStatementRequestValidator {
       throw new InvalidOperationException();
     }
     return (endCheck == customerStatementRequestDto.getEndBalance());
+  }
+
+  public void validateRequestInputDTO(CustomerStatementRequestDto customerStatementRequestDto)
+      throws InputValidationException {
+    if (!(customerStatementRequestDto != null && customerStatementRequestDto.getTransactionReference() > 0
+        && null != customerStatementRequestDto.getAccountNumber()
+        && !customerStatementRequestDto.getAccountNumber().isEmpty()
+        && null != customerStatementRequestDto.getMutationType())) {
+      throw new InputValidationException();
+    }
   }
 
 }
